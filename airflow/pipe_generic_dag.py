@@ -205,9 +205,8 @@ def validateJson(data):
 vms_list = config_tools.load_config(PIPELINE)['vms_list']
 if not validateJson(vms_list):
     logging.error('The vms_list schema in Airflow Variable is not valid.')
-    return None
-
-for vms in vms_list:
-    for mode in ['daily','monthly', 'yearly']:
-        dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode)).build(mode)
-        globals()[dag_instance.dag_id()] = dag_instance
+else:
+    for vms in vms_list:
+        for mode in ['daily','monthly', 'yearly']:
+            dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode)).build(mode)
+            globals()[dag_instance.dag_id()] = dag_instance
