@@ -6,9 +6,15 @@ from airflow.utils.trigger_rule import TriggerRule
 from airflow_ext.gfw import config as config_tools
 from airflow_ext.gfw.models import DagFactory
 
+from jsonschema import validate
+
 import imp
+import logging
+import json
 import posixpath as pp
 
+
+PIPELINE='pipe_vms_generic'
 
 def get_dag_path(pipeline, module=None):
     if module is None:
@@ -31,47 +37,21 @@ pipe_events_gaps = imp.load_source('pipe_events_gaps', get_dag_path('pipe_events
 # PIPE_VMS_GENERIC
 #
 class VMSGenericDagFactory(DagFactory):
-    def __init__(self, pipeline, **kwargs):
-        super(VMSGenericDagFactory, self).__init__(pipeline=pipeline, **kwargs)
-
-    def source_validate(self, dag):
-        """
-        Validates the necessary sources to proceed with the VMS pipeline
-
-        :param dag: The DAG which will be associated with the validation.
-        :type dag: DAG from Airflow.
-        """
-        raise NotImplementedError
-
-    def fetch_normalize(self, dag):
-        """
-        Fetches the data and normalizes using airflow operators.
-
-        :param dag: The DAG which will be associated with the validation.
-        :type dag: DAG from Airflow.
-        """
-        raise NotImplementedError
-
-    def pre_processing(self, dag):
-        """
-        Stablishes the chain dependency between the source validators and the fetch_normalization
-
-        :param dag: The DAG which will be associated with the validation.
-        :type dag: DAG from Airflow.
-        """
-        fetch_normalization = fetch_normalize(dag)
-
-        for sensor in self.source_validate(dag):
-            dag >> sensor >> fetch_normalization
-
-        return fetch_normalization
+    def __init__(self, vms_config, **kwargs):
+        super(VMSGenericDagFactory, self).__init__(pipeline='{}_{}'.format(PIPELINE, vms['name']), **kwargs)
+        self.vms_config = vms_config
 
 
     def build(self, mode):
         dag_id = '{}_{}'.format(self.pipeline, mode)
 
         config = self.config
+        config.update(self.vms_config)
+        config['source_tables']=self.vms_config['normalized_tables']
+
+        self.default_args['start_date']=vms_config['start_date']
         default_args = self.default_args
+
         subdag_default_args = dict(
             start_date=default_args['start_date'],
             end_date=default_args['end_date']
@@ -87,6 +67,8 @@ class VMSGenericDagFactory(DagFactory):
         config['source_dates'] = ','.join(self.source_date_range())
 
         with DAG(dag_id, schedule_interval=self.schedule_interval, default_args=self.default_args) as dag:
+
+            source_sensors = self.source_table_sensors(dag)
 
             segment = SubDagOperator(
                 subdag=pipe_segment.PipeSegmentDagFactory(
@@ -142,7 +124,8 @@ class VMSGenericDagFactory(DagFactory):
             )
 
 
-            self.pre_processing(dag) >> segment >> measures
+            for sensor in source_sensors:
+                dag >> sensor >> segment >> measures
 
             measures >> port_events >> port_visits
             measures >> encounters
@@ -215,6 +198,16 @@ class VMSGenericDagFactory(DagFactory):
         return dag
 
 
-for mode in ['daily','monthly', 'yearly']:
-    dag_instance = VMSGenericDagFactory(schedule_interval='@{}'.format(mode)).build(mode)
-    globals()[dag_instance.dag_id()] = dag_instance
+def validateJson(data):
+    with open("./assets/vms_list_schema.json") as vms_schema:
+        validate(instance=data, schema=json.loads(vms_schema.read()))
+
+vms_list = config_tools.load_config(PIPELINE)['vms_list']
+if not validateJson(vms_list):
+    logging.error('The vms_list schema in Airflow Variable is not valid.')
+    return None
+
+for vms in vms_list:
+    for mode in ['daily','monthly', 'yearly']:
+        dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode)).build(mode)
+        globals()[dag_instance.dag_id()] = dag_instance

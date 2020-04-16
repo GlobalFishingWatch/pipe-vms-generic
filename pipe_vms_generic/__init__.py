@@ -5,7 +5,7 @@ Generic VMS to build pipelines.
 __version__ = '1.0.0'
 __author__ = 'Matias Piano'
 __email__ = 'matias@globalfishingwatch.org'
-__source__ = 'https://github.com/GlobalFishingWatch/pipe-naf-reader'
+__source__ = 'https://github.com/GlobalFishingWatch/pipe-vms-generic'
 __license__ = """
 Copyright 2020 Global Fishing Watch Inc.
 Authors:
