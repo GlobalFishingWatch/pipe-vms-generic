@@ -9,8 +9,9 @@ from airflow_ext.gfw.models import DagFactory
 from jsonschema import validate
 
 import imp
-import logging
 import json
+import logging
+import os
 import posixpath as pp
 
 
@@ -197,9 +198,9 @@ class VMSGenericDagFactory(DagFactory):
 
         return dag
 
-
 def validateJson(data):
-    with open("./assets/vms_list_schema.json") as vms_schema:
+    folder=os.path.abspath(os.path.dirname(__file__))
+    with open('{}/{}'.format(folder,"schemas/vms_list_schema.json")) as vms_schema:
         validate(instance=data, schema=json.loads(vms_schema.read()))
 
 vms_list = config_tools.load_config(PIPELINE)['vms_list']

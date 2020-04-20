@@ -8,28 +8,22 @@
           "type": "object",
           "properties": {
             "enable_features_events": { "type": "boolean" },
-            "dataflow_runner": { "type": "string" },
-            "docker_run": { "type": "string" },
+            "events_dataset": { "type": "string" },
             "name": { "type": "string" },
             "normalized_tables": { "type": "string" },
             "pipeline_bucket": { "type": "string" },
             "pipeline_dataset": { "type": "string" },
             "project_id": { "type": "string" },
-            "start_date": { "type": "string" },
-            "source_dataset": { "type": "string" },
-            "temp_bucket": { "type": "string" }
+            "start_date": { "type": "string" }
           },
           "required": [
-            "dataflow_runnner",
-            "docker_run",
+            "events_dataset",
             "name",
             "normalized_tables",
             "pipeline_bucket",
             "pipeline_dataset",
             "project_id",
-            "start_date",
-            "source_dataset",
-            "temp_bucket"
+            "start_date"
           ],
           "additionalProperties": false
         }
