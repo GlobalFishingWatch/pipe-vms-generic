@@ -6,11 +6,10 @@ from airflow.utils.trigger_rule import TriggerRule
 from airflow_ext.gfw import config as config_tools
 from airflow_ext.gfw.models import DagFactory
 
-from jsonschema import validate
+from pipe_vms_generic.validator import validateJson
 
 import imp
 import logging
-import json
 import posixpath as pp
 
 
@@ -197,10 +196,6 @@ class VMSGenericDagFactory(DagFactory):
 
         return dag
 
-
-def validateJson(data):
-    with open("./assets/vms_list_schema.json") as vms_schema:
-        validate(instance=data, schema=json.loads(vms_schema.read()))
 
 vms_list = config_tools.load_config(PIPELINE)['vms_list']
 if not validateJson(vms_list):
