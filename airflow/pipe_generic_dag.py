@@ -39,7 +39,8 @@ pipe_events_gaps = imp.load_source('pipe_events_gaps', get_dag_path('pipe_events
 #
 class VMSGenericDagFactory(DagFactory):
     def __init__(self, vms_config, **kwargs):
-        super(VMSGenericDagFactory, self).__init__(pipeline='{}_{}'.format(PIPELINE, vms_config['name']), **kwargs)
+        super(VMSGenericDagFactory, self).__init__(pipeline=PIPELINE, **kwargs)
+        self.pipeline = '{}_{}'.format(PIPELINE, vms_config['name'])
         self.vms_config = vms_config
 
 
@@ -48,10 +49,13 @@ class VMSGenericDagFactory(DagFactory):
 
         config = self.config
         config.update(self.vms_config)
-        config['source_tables']=self.vms_config['normalized_tables']
+        config['source_tables'] = self.vms_config['normalized_tables']
 
-        self.default_args['start_date']=vms_config['start_date']
+        self.default_args['start_date'] = self.vms_config['start_date']
         default_args = self.default_args
+
+        print('>>>>>> Config: {}'.format(config))
+        print('>>>>>> Default Args: {}'.format(default_args))
 
         subdag_default_args = dict(
             start_date=default_args['start_date'],
