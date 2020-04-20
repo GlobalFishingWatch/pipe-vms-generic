@@ -205,7 +205,7 @@ def validateJson(data):
 
 variables = config_tools.load_config(PIPELINE)
 validateJson(variables)
-for vms in json.loads(variables['vms_list']):
+for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
         dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode)).build(mode)
         globals()[dag_instance.dag_id()] = dag_instance
