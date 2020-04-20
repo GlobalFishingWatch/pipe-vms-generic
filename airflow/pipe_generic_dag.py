@@ -6,8 +6,6 @@ from airflow.utils.trigger_rule import TriggerRule
 from airflow_ext.gfw import config as config_tools
 from airflow_ext.gfw.models import DagFactory
 
-from pipe_vms_generic.validator import validateJson
-
 import imp
 import logging
 import os
