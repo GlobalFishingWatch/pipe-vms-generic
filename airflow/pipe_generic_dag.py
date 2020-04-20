@@ -10,7 +10,12 @@ from pipe_vms_generic.validator import validateJson
 
 import imp
 import logging
+import os
 import posixpath as pp
+import sys
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+from .utils.validator import validateJson
 
 
 PIPELINE='pipe_vms_generic'
