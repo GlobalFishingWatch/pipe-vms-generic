@@ -40,9 +40,9 @@ pipe_events_gaps = imp.load_source('pipe_events_gaps', get_dag_path('pipe_events
 # PIPE_VMS_GENERIC
 #
 class VMSGenericDagFactory(DagFactory):
-    def __init__(self, vms_config, **kwargs):
+    def __init__(self, name, **kwargs):
         super(VMSGenericDagFactory, self).__init__(pipeline=PIPELINE, **kwargs)
-        self.pipeline = '{}_{}'.format(PIPELINE, vms_config['name'])
+        self.pipeline = '{}_{}'.format(PIPELINE, name)
 
 
     def build(self, mode):
@@ -212,6 +212,6 @@ validateJson(variables)
 for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
         print(vms)
-        pipeline_start_date=datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
-        dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(mode)
-        globals()[dag_instance.dag_id()] = dag_instance
+        pipeline_start_date = datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
+        dag_instance = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(mode)
+        globals()[dag_instance.dag_id] = dag_instance
