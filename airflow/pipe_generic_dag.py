@@ -47,6 +47,7 @@ class VMSGenericDagFactory(DagFactory):
         dag_id = '{}_{}'.format(self.pipeline, mode)
 
         config = self.config
+        config['source_dataset'] = config['pipeline_dataset']
         config['source_tables'] = config['normalized_tables']
 
         default_args = self.default_args
