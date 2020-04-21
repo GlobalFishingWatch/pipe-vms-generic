@@ -6,6 +6,8 @@ from airflow.utils.trigger_rule import TriggerRule
 from airflow_ext.gfw import config as config_tools
 from airflow_ext.gfw.models import DagFactory
 
+from datetime import datetime
+
 from jsonschema import validate
 
 import imp
@@ -39,7 +41,7 @@ pipe_events_gaps = imp.load_source('pipe_events_gaps', get_dag_path('pipe_events
 #
 class VMSGenericDagFactory(DagFactory):
     def __init__(self, vms_config, **kwargs):
-        super(VMSGenericDagFactory, self).__init__(pipeline=PIPELINE, extra_default_args={'start_date':vms_config['start_date']}, extra_config=vms_config, **kwargs)
+        super(VMSGenericDagFactory, self).__init__(pipeline=PIPELINE, **kwargs)
         self.pipeline = '{}_{}'.format(PIPELINE, vms_config['name'])
 
 
@@ -210,5 +212,6 @@ validateJson(variables)
 for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
         print(vms)
-        dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode)).build(mode)
+        pipeline_start_date=datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
+        dag_instance = VMSGenericDagFactory(vms, schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(mode)
         globals()[dag_instance.dag_id()] = dag_instance
