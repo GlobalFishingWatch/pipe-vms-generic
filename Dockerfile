@@ -30,4 +30,5 @@ COPY . /opt/project
 
 RUN apt-get install -y vim
 # install
-RUN pip install -r requirements.txt -e .
+RUN pip install -r requirements.txt
+RUN pip install -e .
