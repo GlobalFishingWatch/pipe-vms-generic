@@ -80,7 +80,7 @@ class VMSGenericDagFactory(DagFactory):
                     extra_config=dict(
                         pipeline_dataset=config['pipeline_dataset'],
                         source_dataset=config['pipeline_dataset'],
-                        normalized_tables='{normalized}'.format(**config),
+                        normalized_tables='{normalized_tables}'.format(**config),
                         dataflow_runner='{dataflow_runner}'.format(**config),
                         temp_shards_per_day="3",
                     )
