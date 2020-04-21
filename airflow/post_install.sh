@@ -9,3 +9,5 @@ python $AIRFLOW_HOME/utils/set_default_variables.py \
     dataflow_runner="DataflowRunner" \
     docker_run="{{ var.value.DOCKER_RUN }}" \
     temp_bucket="{{ var.value.TEMP_BUCKET }}" \
+    project_id="{{ var.value.PROJECT_ID }}" \
+

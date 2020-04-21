@@ -13,7 +13,6 @@
             "normalized_tables": { "type": "string" },
             "pipeline_bucket": { "type": "string" },
             "pipeline_dataset": { "type": "string" },
-            "project_id": { "type": "string" },
             "start_date": { "type": "string" }
           },
           "required": [
@@ -22,7 +21,6 @@
             "normalized_tables",
             "pipeline_bucket",
             "pipeline_dataset",
-            "project_id",
             "start_date"
           ],
           "additionalProperties": false
