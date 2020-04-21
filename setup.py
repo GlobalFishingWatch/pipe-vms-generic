@@ -3,6 +3,7 @@
 """
 Setup script for pipe-vms-generic
 """
+from pipe_tools.beam.requirements import requirements as DATAFLOW_PINNED_DEPENDENCIES
 
 from setuptools import find_packages
 from setuptools import setup
@@ -30,7 +31,7 @@ setup(
     author_email=package.__email__,
     description=package.__doc__.strip(),
     include_package_data=True,
-    install_requires=DEPENDENCIES,
+    install_requires=DEPENDENCIES + DATAFLOW_PINNED_DEPENDENCIES,
     license="Apache 2.0",
     long_description=readme,
     name='pipe-vms-generic',
