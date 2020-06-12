@@ -15,7 +15,7 @@ package = __import__('pipe_vms_generic')
 
 DEPENDENCIES = [
     "pytest",
-    "pipe-tools==3.1.1",
+    "pipe-tools==3.1.2",
     "jinja2-cli",
     "jsonschema==3.2.0"
 ]
