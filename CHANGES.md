@@ -8,6 +8,14 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 
 ## [Unreleased]
 
+## v1.0.2 - 2020-07-23
+
+### Changed
+
+* [GlobalFishingWatch/gfw-eng-tasks#56](https://github.com/GlobalFishingWatch/gfw-eng-tasks/issues/56): Changes
+  * Increment the Google SDK to `300.0.0`.
+  * Uses `source_tables` instead of `normalized_tables` for segment pipe.
+
 ## v1.0.1 - 2020-06-12
 
 ### Changed
