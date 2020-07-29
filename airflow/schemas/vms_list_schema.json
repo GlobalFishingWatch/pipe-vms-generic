@@ -7,7 +7,7 @@
         {
           "type": "object",
           "properties": {
-            "enable_features_events": { "type": "boolean" },
+            "enable_features_events": { "type": "string" },
             "events_dataset": { "type": "string" },
             "name": { "type": "string" },
             "normalized_tables": { "type": "string" },

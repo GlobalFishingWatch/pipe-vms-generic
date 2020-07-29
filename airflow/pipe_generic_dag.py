@@ -20,6 +20,15 @@ import posixpath as pp
 PIPELINE='pipe_vms_generic'
 
 def get_dag_path(pipeline, module=None):
+    """
+    Gets the DAG path.
+
+    :@param pipeline: The Airflow Variable key that has the config.
+    :@type pipeline: str.
+    :@param module: The module that belongs to the pipeline.
+    :@type module: str.
+    :@return: The DAG path of the pipeline.
+    """
     if module is None:
         module = pipeline
     config = Variable.get(pipeline, deserialize_json=True)
@@ -40,12 +49,28 @@ pipe_events_gaps = imp.load_source('pipe_events_gaps', get_dag_path('pipe_events
 # PIPE_VMS_GENERIC
 #
 class VMSGenericDagFactory(DagFactory):
+    """Concrete class to handle the DAG for pipe_vms_generic."""
+
     def __init__(self, name, **kwargs):
+        """
+        Constructs the DAG.
+
+        :@param pipeline: The pipeline name. Default value the PIPELINE.
+        :@type pipeline: str.
+        :@param kwargs: A dict of optional parameters.
+        :@param kwargs: dict.
+        """
         super(VMSGenericDagFactory, self).__init__(pipeline=PIPELINE, **kwargs)
         self.pipeline = '{}_{}'.format(PIPELINE, name)
 
 
     def build(self, mode):
+        """
+        Override of build method.
+
+        :@param dag_id: The id of the DAG.
+        :@type table: str.
+        """
         dag_id = '{}_{}'.format(self.pipeline, mode)
 
         config = self.config
@@ -82,7 +107,7 @@ class VMSGenericDagFactory(DagFactory):
                     extra_config=dict(
                         pipeline_dataset=config['pipeline_dataset'],
                         source_dataset=config['pipeline_dataset'],
-                        normalized_tables='{normalized_tables}'.format(**config),
+                        source_tables='{normalized_tables}'.format(**config),
                         dataflow_runner='{dataflow_runner}'.format(**config),
                         temp_shards_per_day="3",
                     )
@@ -203,6 +228,13 @@ class VMSGenericDagFactory(DagFactory):
         return dag
 
 def validateJson(data):
+    """
+    Validates the configuration with a JSON schema.
+
+    :@param data: The data to be validated.
+    :@type data: dict.
+    :raise: Error in case the dict don't match the schema.
+    """
     folder=os.path.abspath(os.path.dirname(__file__))
     with open('{}/{}'.format(folder,"schemas/vms_list_schema.json")) as vms_schema:
         validate(instance=data, schema=json.loads(vms_schema.read()))
