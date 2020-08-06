@@ -64,14 +64,13 @@ class VMSGenericDagFactory(DagFactory):
         self.pipeline = '{}_{}'.format(PIPELINE, name)
 
 
-    def build(self, mode):
+    def build(self, dag_id):
         """
         Override of build method.
 
         :@param dag_id: The id of the DAG.
-        :@type table: str.
+        :@type dag_id: str.
         """
-        dag_id = '{}_{}'.format(self.pipeline, mode)
 
         config = self.config
         config['source_dataset'] = config['pipeline_dataset']
@@ -245,5 +244,5 @@ for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
         print(vms)
         pipeline_start_date = datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
-        dag_instance = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(mode)
-        globals()[dag_instance.dag_id] = dag_instance
+        dag_id = '{}_{}_{}'.format(PIPELINE, vms['name'], mode)
+        globals()[dag_id] = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(dag_id)
