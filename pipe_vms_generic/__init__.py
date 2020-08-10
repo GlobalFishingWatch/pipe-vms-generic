@@ -2,7 +2,7 @@
 Generic VMS to build pipelines.
 """
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 __author__ = 'Matias Piano'
 __email__ = 'matias@globalfishingwatch.org'
 __source__ = 'https://github.com/GlobalFishingWatch/pipe-vms-generic'
