@@ -64,14 +64,13 @@ class VMSGenericDagFactory(DagFactory):
         self.pipeline = '{}_{}'.format(PIPELINE, name)
 
 
-    def build(self, mode):
+    def build(self, dag_id):
         """
         Override of build method.
 
         :@param dag_id: The id of the DAG.
-        :@type table: str.
+        :@type dag_id: str.
         """
-        dag_id = '{}_{}'.format(self.pipeline, mode)
 
         config = self.config
         config['source_dataset'] = config['pipeline_dataset']
@@ -111,7 +110,7 @@ class VMSGenericDagFactory(DagFactory):
                         dataflow_runner='{dataflow_runner}'.format(**config),
                         temp_shards_per_day="3",
                     )
-                ).build(dag_id='{}.segment'.format(dag_id)),
+                ).build(dag_id=dag_id+'.segment'),
                 trigger_rule=TriggerRule.ONE_SUCCESS,
                 depends_on_past=True,
                 task_id='segment'
@@ -122,7 +121,7 @@ class VMSGenericDagFactory(DagFactory):
                     schedule_interval=dag.schedule_interval,
                     extra_default_args=subdag_default_args,
                     extra_config=subdag_config
-                ).build(dag_id='{}.measures'.format(dag_id)),
+                ).build(dag_id=dag_id+'.measures'),
                 task_id='measures'
             )
 
@@ -131,7 +130,7 @@ class VMSGenericDagFactory(DagFactory):
                     schedule_interval=dag.schedule_interval,
                     extra_default_args=subdag_default_args,
                     extra_config=subdag_config
-                ).build(dag_id='{}.port_events'.format(dag_id)),
+                ).build(dag_id=dag_id+'.port_events'),
                 task_id='port_events'
             )
 
@@ -140,7 +139,7 @@ class VMSGenericDagFactory(DagFactory):
                     schedule_interval=dag.schedule_interval,
                     extra_default_args=subdag_default_args,
                     extra_config=subdag_config
-                ).build(dag_id='{}.port_visits'.format(dag_id)),
+                ).build(dag_id=dag_id+'.port_visits'),
                 task_id='port_visits'
             )
 
@@ -149,7 +148,7 @@ class VMSGenericDagFactory(DagFactory):
                     schedule_interval=dag.schedule_interval,
                     extra_default_args=subdag_default_args,
                     extra_config=subdag_config
-                ).build(dag_id='{}.encounters'.format(dag_id)),
+                ).build(dag_id=dag_id+'.encounters'),
                 task_id='encounters'
             )
 
@@ -167,7 +166,7 @@ class VMSGenericDagFactory(DagFactory):
                         schedule_interval=dag.schedule_interval,
                         extra_default_args=subdag_default_args,
                         extra_config=subdag_config
-                    ).build(dag_id='{}.features'.format(dag_id)),
+                    ).build(dag_id=dag_id+'.features'),
                     depends_on_past=True,
                     task_id='features'
                 )
@@ -178,7 +177,7 @@ class VMSGenericDagFactory(DagFactory):
                         schedule_interval=dag.schedule_interval,
                         extra_default_args=subdag_default_args,
                         extra_config=subdag_config
-                    ).build(dag_id='{}.pipe_events_anchorages'.format(dag_id)),
+                    ).build(dag_id=dag_id+'.pipe_events_anchorages'),
                     depends_on_past=True,
                     task_id='pipe_events_anchorages'
                 )
@@ -189,7 +188,7 @@ class VMSGenericDagFactory(DagFactory):
                         schedule_interval=dag.schedule_interval,
                         extra_default_args=subdag_default_args,
                         extra_config=subdag_config
-                    ).build(dag_id='{}.pipe_events_encounters'.format(dag_id)),
+                    ).build(dag_id=dag_id+'.pipe_events_encounters'),
                     depends_on_past=True,
                     task_id='pipe_events_encounters'
                 )
@@ -200,7 +199,7 @@ class VMSGenericDagFactory(DagFactory):
                         schedule_interval=dag.schedule_interval,
                         extra_default_args=subdag_default_args,
                         extra_config=subdag_config
-                    ).build(dag_id='{}.pipe_events_fishing'.format(dag_id)),
+                    ).build(dag_id=dag_id+'.pipe_events_fishing'),
                     depends_on_past=True,
                     task_id='pipe_events_fishing'
                 )
@@ -211,7 +210,7 @@ class VMSGenericDagFactory(DagFactory):
                         schedule_interval=dag.schedule_interval,
                         extra_default_args=subdag_default_args,
                         extra_config=subdag_config
-                    ).build(dag_id='{}.pipe_events_gaps'.format(dag_id)),
+                    ).build(dag_id=dag_id+'.pipe_events_gaps'),
                     depends_on_past=True,
                     task_id='pipe_events_gaps'
                 )
@@ -245,5 +244,5 @@ for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
         print(vms)
         pipeline_start_date = datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
-        dag_instance = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(mode)
-        globals()[dag_instance.dag_id] = dag_instance
+        dag_id = '{}_{}_{}'.format(PIPELINE, vms['name'], mode)
+        globals()[dag_id] = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(dag_id)

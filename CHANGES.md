@@ -8,6 +8,13 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 
 ## [Unreleased]
 
+## v1.0.3 - 2020-08-10
+
+### Changed
+
+* [GlobalFishingWatch/gfw-eng-tasks#145](https://github.com/GlobalFishingWatch/gfw-eng-tasks/issues/145): Changes
+  * to use dag_id immediately and without format to avoid Airflow errors.
+
 ## v1.0.2 - 2020-07-23
 
 ### Changed
