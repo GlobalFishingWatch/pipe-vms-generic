@@ -78,9 +78,6 @@ class VMSGenericDagFactory(DagFactory):
 
         default_args = self.default_args
 
-        print('>>>>>> Config: {}'.format(config))
-        print('>>>>>> Default Args: {}'.format(default_args))
-
         subdag_default_args = dict(
             start_date=default_args['start_date'],
             end_date=default_args['end_date']
@@ -242,7 +239,7 @@ variables = config_tools.load_config(PIPELINE)
 validateJson(variables)
 for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
-        print(vms)
+        print('>>>>>> VMS: {}'.format(vms))
         pipeline_start_date = datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
         dag_id = '{}_{}_{}'.format(PIPELINE, vms['name'], mode)
         globals()[dag_id] = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(dag_id)
