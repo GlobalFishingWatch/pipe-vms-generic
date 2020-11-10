@@ -42,7 +42,6 @@ pipe_features = imp.load_source('pipe_features', get_dag_path('pipe_features'))
 pipe_events_anchorages = imp.load_source('pipe_events_anchorages', get_dag_path('pipe_events.anchorages','pipe_events_anchorages'))
 pipe_events_encounters = imp.load_source('pipe_events_encounters', get_dag_path('pipe_events.encounters','pipe_events_encounters'))
 pipe_events_fishing = imp.load_source('pipe_events_fishing', get_dag_path('pipe_events.fishing','pipe_events_fishing'))
-pipe_events_gaps = imp.load_source('pipe_events_gaps', get_dag_path('pipe_events.gaps','pipe_events_gaps'))
 
 
 #
@@ -77,9 +76,6 @@ class VMSGenericDagFactory(DagFactory):
         config['source_tables'] = config['normalized_tables']
 
         default_args = self.default_args
-
-        print('>>>>>> Config: {}'.format(config))
-        print('>>>>>> Default Args: {}'.format(default_args))
 
         subdag_default_args = dict(
             start_date=default_args['start_date'],
@@ -204,17 +200,6 @@ class VMSGenericDagFactory(DagFactory):
                     task_id='pipe_events_fishing'
                 )
 
-                events_gaps = SubDagOperator(
-                    subdag = pipe_events_gaps.PipelineDagFactory(
-                        config_tools.load_config('pipe_events.gaps'),
-                        schedule_interval=dag.schedule_interval,
-                        extra_default_args=subdag_default_args,
-                        extra_config=subdag_config
-                    ).build(dag_id=dag_id+'.pipe_events_gaps'),
-                    depends_on_past=True,
-                    task_id='pipe_events_gaps'
-                )
-
                 port_visits >> features
                 encounters >> features
 
@@ -222,7 +207,6 @@ class VMSGenericDagFactory(DagFactory):
                 features >> events_anchorages
                 features >> events_encounters
                 features >> events_fishing
-                features >> events_gaps
 
         return dag
 
@@ -242,7 +226,7 @@ variables = config_tools.load_config(PIPELINE)
 validateJson(variables)
 for vms in variables['vms_list']:
     for mode in ['daily','monthly', 'yearly']:
-        print(vms)
+        print('>>>>>> VMS: {}'.format(vms))
         pipeline_start_date = datetime.strptime(vms['start_date'].strip(), "%Y-%m-%d")
         dag_id = '{}_{}_{}'.format(PIPELINE, vms['name'], mode)
         globals()[dag_id] = VMSGenericDagFactory(vms['name'], schedule_interval='@{}'.format(mode), extra_default_args={'start_date':pipeline_start_date}, extra_config=vms).build(dag_id)
