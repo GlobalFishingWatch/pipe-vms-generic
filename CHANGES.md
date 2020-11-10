@@ -8,6 +8,18 @@ Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to
 
 ## [Unreleased]
 
+## v1.0.4 - 2020-11-06
+
+### Changed
+
+* [Data Pipeline/PIPELINE-83](https://globalfishingwatch.atlassian.net/browse/PIPELINE-83): Changes
+  * on logging each dag property.
+
+### Removed
+
+* [Data Pipeline/PIPELINE-233](https://globalfishingwatch.atlassian.net/browse/PIPELINE-233): Removes
+  * The events gaps that is not in use.
+
 ## v1.0.3 - 2020-08-10
 
 ### Changed
