@@ -6,7 +6,7 @@ WORKDIR /opt/project
 
 # Download and install google cloud. See the dockerfile at
 # https://hub.docker.com/r/google/cloud-sdk/~/dockerfile/
-ENV CLOUD_SDK_VERSION 300.0.0
+ENV CLOUD_SDK_VERSION 340.0.0
 ENV CLOUD_SDK_PIP_DEPS crcmod
 ENV CLOUD_SDK_APT_DEPS "curl gcc python-setuptools apt-transport-https lsb-release openssh-client git"
 RUN  \
