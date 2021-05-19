@@ -7,6 +7,9 @@
         {
           "type": "object",
           "properties": {
+            "enable_measures": { "type": "string" },
+            "enable_anchorages": { "type": "string" },
+            "enable_encounters": { "type": "string" },
             "enable_features": { "type": "string" },
             "enable_events": { "type": "string" },
             "events_dataset": { "type": "string" },
