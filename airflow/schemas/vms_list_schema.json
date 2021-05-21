@@ -13,6 +13,7 @@
             "enable_features": { "type": "string" },
             "enable_events": { "type": "string" },
             "events_dataset": { "type": "string" },
+            "postgres_db_table": { "type": "string" },
             "name": { "type": "string" },
             "normalized_tables": { "type": "string" },
             "pipeline_bucket": { "type": "string" },

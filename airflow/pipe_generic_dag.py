@@ -85,6 +85,7 @@ class VMSGenericDagFactory(DagFactory):
             pipeline_dataset=config['pipeline_dataset'],
             source_dataset=config['pipeline_dataset'],
             events_dataset=config['events_dataset'],
+            postgres_db_table=config['postgres_db_table'],
             dataflow_runner='{dataflow_runner}'.format(**config),
             temp_shards_per_day="3",
         )
